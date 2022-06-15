@@ -13,6 +13,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+const (
+	CHANNEL_NAME = "ttt-server-channel"
+)
+
 // Variables used for command line parameters
 var (
 	Token string
@@ -89,9 +93,24 @@ func Ready(s *discordgo.Session, r *discordgo.Ready) {
 		ch, err := s.GuildChannels(g.ID)
 		check(err)
 		for _, c := range ch {
-			if c.Name == "ttt-ip" {
+			if c.Name == CHANNEL_NAME {
 				id := c.ID
-				s.ChannelMessageSend(id, getIp())
+				//s.ChannelMessageSend(id, getIp())
+				c, err = s.ChannelEditComplex(id, &discordgo.ChannelEdit{
+					Name:                 c.Name,
+					Topic:                getIp(),
+					NSFW:                 c.NSFW,
+					Position:             c.Position,
+					Bitrate:              c.Bitrate,
+					UserLimit:            c.UserLimit,
+					PermissionOverwrites: c.PermissionOverwrites,
+					ParentID:             c.ParentID,
+					RateLimitPerUser:     &c.RateLimitPerUser,
+					Archived:             false,
+					AutoArchiveDuration:  10080,
+					Locked:               false,
+					Invitable:            false,
+				})
 			}
 		}
 	}
